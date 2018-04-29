@@ -1,10 +1,12 @@
 version: '2'
 services:
     postgres:
+        container_name: postgres
         image: postgres
         ports:
             - '5433:5432'
     php:
+        container_name: php
         build: php-fpm
         ports:
             - '9002:9000'
@@ -14,6 +16,7 @@ services:
         links:
             - postgres
     nginx:
+        container_name: nginx
         build: nginx
         ports:
             - '8080:80'
