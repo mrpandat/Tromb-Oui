@@ -1,0 +1,49 @@
+version: '2'
+services:
+    postgres:
+        container_name: postgres
+        image: postgres
+        ports:
+            - '5433:5432'
+        environment:
+            POSTGRES_USER: "test"
+            POSTGRES_PASSWORD: "test"
+            POSTGRES_DB: "trombOui"
+    php:
+        container_name: php
+        build: 
+            context: ./docker/php-fpm
+            dockerfile: Dockerfile
+        ports:
+            - '9002:9000'
+        volumes:
+            - ../:/var/www/symfony:cached
+            - ./logs/symfony:/var/www/symfony/var/logs:cached
+        links:
+            - postgres
+        depends_on:
+            - composer
+    composer:
+        container_name: composer
+        restart: 'no'
+        build:
+            context: ./docker/composer
+            dockerfile: Dockerfile
+        image: lv-booster/composer:latest
+        command: install
+        volumes:
+            - ../:/app
+
+    nginx:
+        container_name: nginx
+        build: 
+            context: ./docker/nginx
+            dockerfile: Dockerfile
+        ports:
+            - '8080:80'
+        links:
+            - php
+        volumes_from:
+            - php
+        volumes:
+            - ./logs/nginx/:/var/log/nginx:cached
