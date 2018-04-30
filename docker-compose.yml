@@ -1,14 +1,26 @@
 version: '2'
 services:
-    postgres:
-        container_name: postgres
-        image: postgres
-        ports:
-            - '5433:5432'
+    mysql:
+      container_name: mysql
+      image: mysql:5.7.10
+      environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: boulou
+          MYSQL_PASSWORD: boulou
+      volumes:
+          - ./volumes/mysql/dump:/docker-entrypoint-initdb.d
+          - ./volumes/mysql/lib:/var/lib/mysql
+    phpmyadmin:
+        container_name: pma
+        image: phpmyadmin/phpmyadmin
+        links:
+            - mysql:db
         environment:
-            POSTGRES_USER: "test"
-            POSTGRES_PASSWORD: "test"
-            POSTGRES_DB: "trombOui"
+            MYSQL_USER: boulou
+            MYSQL_PASSWORD: boulou
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - 8001:80
     composer:
         container_name: composer
         restart: 'no'
@@ -31,7 +43,7 @@ services:
             - .:/var/www/symfony
             - ./logs/symfony:/var/www/symfony/var/logs:cached
         links:
-            - postgres
+            - mysql
         depends_on:
             - composer
 
