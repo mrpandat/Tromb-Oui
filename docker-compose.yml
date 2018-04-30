@@ -1,0 +1,37 @@
+version: '2'
+services:
+    postgres:
+        container_name: postgres
+        image: postgres
+        ports:
+            - '5433:5432'
+        environment:
+            POSTGRES_USER: "test"
+            POSTGRES_PASSWORD: "test"
+            POSTGRES_DB: "trombOui"
+    composer:
+        container_name: composer
+        restart: 'no'
+        build:
+            context: ./docker/composer
+            dockerfile: Dockerfile
+        image: tromboui/composer:latest
+        command: install
+        volumes:
+            - .:/app
+    php:
+        container_name: php
+        build: 
+            context: ./docker/php-fpm
+            dockerfile: Dockerfile
+        entrypoint: "php bin/console server:run *:8000"
+        ports:
+            - '8080:8000'
+        volumes:
+            - .:/var/www/symfony
+            - ./logs/symfony:/var/www/symfony/var/logs:cached
+        links:
+            - postgres
+        depends_on:
+            - composer
+
