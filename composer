@@ -1,0 +1,8 @@
+#!/bin/bash
+
+docker run --rm \
+  -v $(pwd)/backend/src:/app\
+  --pid=host \
+  tromboui/composer:latest \
+  $@
+

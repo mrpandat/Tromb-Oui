@@ -9,41 +9,29 @@ services:
             POSTGRES_USER: "test"
             POSTGRES_PASSWORD: "test"
             POSTGRES_DB: "trombOui"
-    php:
-        container_name: php
-        build: 
-            context: ./docker/php-fpm
-            dockerfile: Dockerfile
-        ports:
-            - '9002:9000'
-        volumes:
-            - ../:/var/www/symfony:cached
-            - ./logs/symfony:/var/www/symfony/var/logs:cached
-        links:
-            - postgres
-        depends_on:
-            - composer
     composer:
         container_name: composer
         restart: 'no'
         build:
             context: ./docker/composer
             dockerfile: Dockerfile
-        image: lv-booster/composer:latest
+        image: tromboui/composer:latest
         command: install
         volumes:
-            - ../:/app
-
-    nginx:
-        container_name: nginx
+            - .:/app
+    php:
+        container_name: php
         build: 
-            context: ./docker/nginx
+            context: ./docker/php-fpm
             dockerfile: Dockerfile
+        entrypoint: "php bin/console server:run *:8000"
         ports:
-            - '8080:80'
-        links:
-            - php
-        volumes_from:
-            - php
+            - '8080:8000'
         volumes:
-            - ./logs/nginx/:/var/log/nginx:cached
+            - .:/var/www/symfony
+            - ./logs/symfony:/var/www/symfony/var/logs:cached
+        links:
+            - postgres
+        depends_on:
+            - composer
+
