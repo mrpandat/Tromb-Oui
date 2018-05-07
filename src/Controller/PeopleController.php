@@ -46,13 +46,14 @@ class PeopleController extends Controller
       $form = $this->createForm(PeopleType::class, new People());
       $form->submit($request->request->all());
       if (false === $form->isValid()) {
-          return new JsonResponse($form);
+          $error = array('code' => Response::HTTP_BAD_REQUEST, 'error' => (string)$form->getErrors(true, false));
+          return new JsonResponse($error, Response::HTTP_BAD_REQUEST);
       }
       $entityManager = $this->getDoctrine()->getManager();
       $entityManager->persist($form->getData());
       $entityManager->flush();
 
-      return new JsonResponse($form);
+      return new JsonResponse($form->getData());
 
     }
 }
