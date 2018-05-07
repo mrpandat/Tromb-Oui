@@ -12,6 +12,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use App\Entity\People;
+use App\Form\PeopleType;
+
 /**
  * Brand controller.
  *
@@ -19,7 +21,7 @@ use App\Entity\People;
  */
 class PeopleController extends Controller
 {
-    /**
+      /**
      * Lists all Peoples.
      * @FOSRest\Get("/peoples")
      *
@@ -41,12 +43,16 @@ class PeopleController extends Controller
      */
     public function postPeopleAction(Request $request)
     {
-        $people = new People();
-        $people->setName($request->get('name'));
-        $people->setDescription($request->get('description'));
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($people);
-        $em->flush();
-        return new JsonResponse($people);
+      $form = $this->createForm(PeopleType::class, new People());
+      $form->submit($request->request->all());
+      if (false === $form->isValid()) {
+          return new JsonResponse($form);
+      }
+      $entityManager = $this->getDoctrine()->getManager();
+      $entityManager->persist($form->getData());
+      $entityManager->flush();
+
+      return new JsonResponse($form);
+
     }
 }
