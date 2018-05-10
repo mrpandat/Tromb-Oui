@@ -1,59 +1,102 @@
 <?php
 
 namespace App\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\Controller\Annotations as FOSRest;
+
 use App\Entity\People;
 use App\Form\PeopleType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * Brand controller.
- *
- * @Route("/")
+ * @Route("/api/v1/people")
  */
 class PeopleController extends Controller
 {
-      /**
-     * Lists all Peoples.
-     * @FOSRest\Get("/peoples")
-     *
-     * @return array
+    /**
+     * @Route("/", name="people_index", methods="GET")
      */
-    public function getPeoplesAction()
+    public function index(): Response
     {
-        $repository = $this->getDoctrine()->getRepository(People::class);
-
-        $people = $repository->findall();
-
+        $people = $this->getDoctrine()
+            ->getRepository(People::class)
+            ->findAll();
         return new JsonResponse($people);
     }
+
     /**
-     * Create People.
-     * @FOSRest\Post("/people")
-     *
-     * @return array
+     * @Route("/new", name="people_new", methods="POST")
      */
-    public function postPeopleAction(Request $request)
+    public function new(Request $request): Response
     {
-      $form = $this->createForm(PeopleType::class, new People());
-      $form->submit($request->request->all());
-      if (false === $form->isValid()) {
-          $error = array('code' => Response::HTTP_BAD_REQUEST, 'error' => (string)$form->getErrors(true, false));
-          return new JsonResponse($error, Response::HTTP_BAD_REQUEST);
+        $person = new People();
+        $form = $this->createForm(PeopleType::class, $person);
+        $form->handleRequest($request);
+        $form->submit($request->request->all());
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($person);
+            $em->flush();
+            return new JsonResponse($person);
+        }
+
+        $error = array('code' => Response::HTTP_BAD_REQUEST, 'error' => (string)$form->getErrors(true, false));
+        return new JsonResponse($error, Response::HTTP_BAD_REQUEST);
+    }
+
+    /**
+     * @Route("/{id}", name="people_show", methods="GET")
+     */
+    public function show($id): Response
+    {
+      $em = $this->getDoctrine()->getManager();
+      $person = $em->getRepository(People::class)->findOneById($id);
+      if(!$person) {
+        $error = array('error' => 'No people found with id '.$id);
+        return new JsonResponse($error, Response::HTTP_NOT_FOUND);
       }
-      $entityManager = $this->getDoctrine()->getManager();
-      $entityManager->persist($form->getData());
-      $entityManager->flush();
+      return new JsonResponse($person);
+    }
 
-      return new JsonResponse($form->getData());
+    /**
+     * @Route("/{id}/edit", name="people_edit", methods="POST")
+     */
+    public function edit(Request $request, $id): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $person = $em->getRepository(People::class)->findOneById($id);
+        if(!$person) {
+          $error = array('error' => 'No people found with id '.$id);
+          return new JsonResponse($error, Response::HTTP_NOT_FOUND);
+        }
+        $parameters = $request->request;
 
+        if($parameters->get('name')) {
+          $person->setName($parameters->get('name'));
+        }
+        if($parameters->get('description')) {
+          $person->setDescription($parameters->get('description'));
+        }
+        $em = $this->getDoctrine()->getManager()->flush();
+        return new JsonResponse($person);
+    }
+
+    /**
+     * @Route("/{id}", name="people_delete", methods="DELETE")
+     */
+    public function delete(Request $request, $id): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $person = $em->getRepository(People::class)->findOneById($id);
+        if(!$person) {
+          $error = array('error' => 'No people found with id '.$id);
+          return new JsonResponse($error, Response::HTTP_NOT_FOUND);
+        }
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($person);
+        $em->flush();
+        return new JsonResponse('ok');
     }
 }
