@@ -53,3 +53,7 @@ vendor
 
 
 # End of https://www.gitignore.io/api/symfony
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
