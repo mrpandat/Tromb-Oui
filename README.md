@@ -22,11 +22,11 @@ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
 
 
 ## API
-|Protocol + Route                |Parameters                          |Description                         |
+|Protocol, Route                |Parameters                          |Description                         |
 |----------------|-------------------------------|-----------------------------|
 |`POST /api/login_check`|   _username: String, _password: String         |Sign in to get a JWT Token            |
 |`GET /api/v1/people/get`|   None         |Get all people            |
 |`GET /api/v1/people/get{id}`          |None|Get one people |
-|`POST /api/v1/people/new`          |Name: String, Description: String            |Create a new people            |
-|`POST /api/v1/people/{id}/edit`          |Name: String, Description: String  |Edit a people|
-|`DELETE /api/v1/people/{id}`          |None|Delete a people|
+|`POST /api/v1/people/new`          |Name: String, Description: String            |Create a new people, JWT required            |
+|`POST /api/v1/people/{id}/edit`          |Name: String, Description: String  |Edit a people, JWT required|
+|`DELETE /api/v1/people/{id}`          |None|Delete a people, JWT required|
