@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class PeopleController extends Controller
 {
     /**
-     * @Route("/", name="people_index", methods="GET")
+     * @Route("/get", name="people_index", methods="GET")
      */
     public function index(): Response
     {
@@ -47,7 +47,7 @@ class PeopleController extends Controller
     }
 
     /**
-     * @Route("/{id}", name="people_show", methods="GET")
+     * @Route("/get/{id}", name="people_show", methods="GET")
      */
     public function show($id): Response
     {

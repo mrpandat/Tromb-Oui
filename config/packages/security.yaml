@@ -8,7 +8,7 @@ security:
             id: fos_user.user_provider.username
     firewalls:
         login:
-            pattern:  ^/api/login
+            pattern:  ^/api/login_check
             stateless: true
             anonymous: true
             form_login:
@@ -21,6 +21,7 @@ security:
         api:
             pattern:   ^/api
             stateless: true
+            anonymous: true
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
@@ -41,5 +42,6 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/api/v1/people/get*, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/login_check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
