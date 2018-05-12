@@ -6,6 +6,13 @@
 docker-compose up composer
 docker-compose up --build
 ```
+
+# Define Your .env variable
+```
+touch .env
+echo DATABASE_URL=mysql://root:root@mysql:3306/tromboui >> .env
+echo KEY_PASSPHRASE=MyPrivatePassphraseHere >> .env
+```
 # BACKEND
 
 ## Create a user with FOSUser
