@@ -11,6 +11,14 @@ docker-compose up --build
 ## Create a user with FOSUser
 docker exec php php bin/console fos:user:create testuser test@example.com p@ssword
 
+## Generate your private keys
+```
+mkdir -p config/jwt
+openssl genrsa -out config/jwt/private.pem -aes256 4096
+openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
+```
+
+
 ## API
 |Protocol + Route                |Parameters                          |Description                         |
 |----------------|-------------------------------|-----------------------------|
