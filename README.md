@@ -9,7 +9,9 @@ docker-compose up --build
 # BACKEND
 
 ## Create a user with FOSUser
+```
 docker exec php php bin/console fos:user:create testuser test@example.com p@ssword
+```
 
 ## Generate your private keys
 ```
