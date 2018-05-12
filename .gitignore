@@ -2,6 +2,7 @@ volumes
 log
 var
 vendor
+.env
 # Created by https://www.gitignore.io/api/symfony
 
 ### Symfony ###
