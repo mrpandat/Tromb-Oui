@@ -1,6 +1,8 @@
+volumes
 log
 var
 vendor
+.env
 # Created by https://www.gitignore.io/api/symfony
 
 ### Symfony ###
@@ -52,3 +54,7 @@ vendor
 
 
 # End of https://www.gitignore.io/api/symfony
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
