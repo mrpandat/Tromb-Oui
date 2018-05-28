@@ -51,13 +51,13 @@ class PeopleController extends Controller
      */
     public function show($id): Response
     {
-      $em = $this->getDoctrine()->getManager();
-      $person = $em->getRepository(People::class)->findOneById($id);
-      if(!$person) {
-        $error = array('error' => 'No people found with id '.$id);
-        return new JsonResponse($error, Response::HTTP_NOT_FOUND);
-      }
-      return new JsonResponse($person);
+        $em = $this->getDoctrine()->getManager();
+        $person = $em->getRepository(People::class)->findOneById($id);
+        if (!$person) {
+            $error = array('error' => 'No people found with id '.$id);
+            return new JsonResponse($error, Response::HTTP_NOT_FOUND);
+        }
+        return new JsonResponse($person);
     }
 
     /**
@@ -67,17 +67,17 @@ class PeopleController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $person = $em->getRepository(People::class)->findOneById($id);
-        if(!$person) {
-          $error = array('error' => 'No people found with id '.$id);
-          return new JsonResponse($error, Response::HTTP_NOT_FOUND);
+        if (!$person) {
+            $error = array('error' => 'No people found with id '.$id);
+            return new JsonResponse($error, Response::HTTP_NOT_FOUND);
         }
         $parameters = $request->request;
 
-        if($parameters->get('name')) {
-          $person->setName($parameters->get('name'));
+        if ($parameters->get('name')) {
+            $person->setName($parameters->get('name'));
         }
-        if($parameters->get('description')) {
-          $person->setDescription($parameters->get('description'));
+        if ($parameters->get('description')) {
+            $person->setDescription($parameters->get('description'));
         }
         $em = $this->getDoctrine()->getManager()->flush();
         return new JsonResponse($person);
@@ -90,9 +90,9 @@ class PeopleController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $person = $em->getRepository(People::class)->findOneById($id);
-        if(!$person) {
-          $error = array('error' => 'No people found with id '.$id);
-          return new JsonResponse($error, Response::HTTP_NOT_FOUND);
+        if (!$person) {
+            $error = array('error' => 'No people found with id '.$id);
+            return new JsonResponse($error, Response::HTTP_NOT_FOUND);
         }
         $em = $this->getDoctrine()->getManager();
         $em->remove($person);
