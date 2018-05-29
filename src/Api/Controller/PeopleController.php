@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller;
+namespace Api\Controller;
 
-use App\Entity\People;
-use App\Form\PeopleType;
+use Api\Entity\People;
+use Api\Form\PeopleType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
