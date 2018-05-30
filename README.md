@@ -3,24 +3,29 @@
 # Setup
 
 ```
-docker-compose up composer
-docker-compose up --build
+docker-compose up
 ```
 
-# Define Your .env variable
+## Define Your .env variable
 ```
 touch .env
 echo DATABASE_URL=mysql://root:root@mysql:3306/tromboui >> .env
 echo KEY_PASSPHRASE=MyPrivatePassphraseHere >> .env
 ```
-# BACKEND
+## BACKEND
 
-## Create a user with FOSUser
+### Create a user with FOSUser
 ```
 docker exec php php bin/console fos:user:create testuser test@example.com p@ssword
 ```
 
-## Generate your private keys
+### Create your database
+```
+docker exec php bin/console doctrine:database:create
+docker exec php bin/console doctrine:schema:update --force
+```
+
+### Generate your private keys
 ```
 mkdir -p config/jwt
 openssl genrsa -out config/jwt/private.pem -aes256 4096
@@ -28,7 +33,7 @@ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
 ```
 
 
-## API
+# API Documentation
 |Protocol, Route                |Parameters                          |Description                         |
 |----------------|-------------------------------|-----------------------------|
 |`POST /api/login_check`|   _username: String, _password: String         |Sign in to get a JWT Token            |

@@ -5,22 +5,12 @@ services:
       image: mysql:5.7.10
       environment:
           MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: tromboui
           MYSQL_USER: boulou
           MYSQL_PASSWORD: boulou
       volumes:
           - ./volumes/mysql/dump:/docker-entrypoint-initdb.d
           - ./volumes/mysql/lib:/var/lib/mysql
-    phpmyadmin:
-        container_name: pma
-        image: phpmyadmin/phpmyadmin
-        links:
-            - mysql:db
-        environment:
-            MYSQL_USER: boulou
-            MYSQL_PASSWORD: boulou
-            MYSQL_ROOT_PASSWORD: root
-        ports:
-            - 8001:80
     composer:
         container_name: composer
         restart: 'no'
@@ -33,7 +23,7 @@ services:
             - .:/app
     php:
         container_name: php
-        build: 
+        build:
             context: ./docker/php-fpm
             dockerfile: Dockerfile
         entrypoint: "php bin/console server:run *:8000"
@@ -41,9 +31,7 @@ services:
             - '8080:8000'
         volumes:
             - .:/var/www/symfony
-            - ./logs/symfony:/var/www/symfony/var/logs:cached
         links:
             - mysql
         depends_on:
             - composer
-

@@ -1,13 +1,16 @@
 <?php
 // src/Entity/User.php
-namespace App\Entity;
+namespace Api\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="peoples")
  */
-class People {
+class People
+{
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
